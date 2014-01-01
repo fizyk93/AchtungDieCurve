@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 /**
@@ -68,7 +69,8 @@ public class AchtungDieCurve extends GameEngine
         
         beginGameLoop();
         
-        EventHandler keyPressed = new EventHandler<KeyEvent>()
+        EventHandler keyPressed;
+        keyPressed = new EventHandler<KeyEvent>()
         {
 
             @Override
@@ -79,11 +81,11 @@ public class AchtungDieCurve extends GameEngine
                     if(s instanceof Curve)
                     {
                         Curve c = (Curve)s;
-                        if(t.getCode() == KeyCode.LEFT) 
+                        if(t.getCode() == c.getLeftKeyCode()) 
                         {
                             c.setTurnLeft(true);
-                        } 
-                        else if(t.getCode() == KeyCode.RIGHT) 
+                        }
+                        else if(t.getCode() == c.getRightKeyCode()) 
                         {
                             c.setTurnRight(true);
                         }                       
@@ -103,11 +105,11 @@ public class AchtungDieCurve extends GameEngine
                     if(s instanceof Curve)
                     {
                         Curve c = (Curve)s;
-                        if(t.getCode() == KeyCode.LEFT) 
+                        if(t.getCode() == c.getLeftKeyCode()) 
                         {
                             c.setTurnLeft(false);
                         } 
-                        else if(t.getCode() == KeyCode.RIGHT) 
+                        else if(t.getCode() == c.getRightKeyCode()) 
                         {
                             c.setTurnRight(false);
                         }
@@ -133,9 +135,20 @@ public class AchtungDieCurve extends GameEngine
         for(int i = 0; i < 2; i++)
         {
             Color tmp;
-            if(i == 0) tmp = Color.BLUE;
-            else tmp = Color.RED;
-            Curve c = new Curve(rnd.nextInt((int)gameScene.getWidth()-100)+50, rnd.nextInt((int)gameScene.getHeight()-100)+50, tmp);
+            KeyCode l, r;
+            if(i == 0)
+            {
+                tmp = Color.BLUE;
+                l = KeyCode.LEFT;
+                r = KeyCode.RIGHT;
+            }
+            else
+            {
+                tmp = Color.RED;
+                l = KeyCode.A;
+                r = KeyCode.D;
+            }
+            Curve c = new Curve(rnd.nextInt((int)gameScene.getWidth()-100)+50, rnd.nextInt((int)gameScene.getHeight()-100)+50, tmp, l, r);
             getSpriteManager().addSprites(c);
             
             getSceneNodes().getChildren().add(c.node);
@@ -168,7 +181,7 @@ public class AchtungDieCurve extends GameEngine
             {
                 Node tmp = copyNode(c);
                 getBodies().getChildren().add(tmp);
-                SpriteManager.addCollisionNodes(tmp);
+                getSpriteManager().addCollisionNodes(tmp);
                 c.incrementBreakCounter();
             }
             
@@ -186,14 +199,25 @@ public class AchtungDieCurve extends GameEngine
         }   
     }
     
-    
+    private boolean outOfBoard()
+    {
+        for(Sprite s : getSpriteManager().getAllSprites())
+        {
+  
+            Circle c = ((Curve)s).getAsCircle();
+            if(c.getTranslateX() > getGameScene().getWidth() || c.getTranslateY() > getGameScene().getHeight() || c.getTranslateX() < 0 || c.getTranslateY() < 0)
+                 return true;
+        }      
+        
+        return false;
+    }
     
     @Override
     protected boolean handleCollision(Sprite sprite, Node node)
     {
-        if(sprite.collide(node))
+        if(sprite.collide(node) || outOfBoard())
         {
-            System.out.println((collisionCounter++) + "Kolizja!" );
+            getGameLoop().stop();
             return true;
         }
         

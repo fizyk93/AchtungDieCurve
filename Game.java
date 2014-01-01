@@ -25,7 +25,7 @@ public class Game extends Application
     @Override
     public void start(Stage primaryStage)
     {
-        game = new AchtungDieCurve(60, "Achtung die Curve");
+        game = new AchtungDieCurve(80, "Achtung die Curve");
         
         game.initialize(primaryStage);
         

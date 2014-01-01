@@ -19,24 +19,24 @@ public class SpriteManager
 {
 //    private final static List Sprites;
     
-    private static final List<Sprite> sprites = new ArrayList<Sprite>();
-    private static final List<Node> collisionNodes = new ArrayList<Node>();
+    private final List<Sprite> sprites = new ArrayList<Sprite>();
+    private final List<Node> collisionNodes = new ArrayList<Node>();
 
     public SpriteManager()
     {
     }
     
-    public static List<Node> getCollisionNodes()
+    public  List<Node> getCollisionNodes()
     {
         return collisionNodes;
     }
     
-    public static void addCollisionNodes(Node... nodes)
+    public  void addCollisionNodes(Node... nodes)
     {
         collisionNodes.addAll(Arrays.asList(nodes));
     }
     
-    public static List<Sprite> getAllSprites()
+    public List<Sprite> getAllSprites()
     {
         return sprites;
     }

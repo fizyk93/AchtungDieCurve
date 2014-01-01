@@ -8,6 +8,7 @@ package achtungdiecurve;
 
 import java.util.Random;
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
@@ -17,6 +18,8 @@ import javafx.scene.shape.Circle;
  */
 public class Curve extends Sprite
 {
+    private KeyCode rightKeyCode, leftKeyCode;
+    
     private static Random  rnd = new Random();
     private double angle;
     
@@ -30,16 +33,21 @@ public class Curve extends Sprite
     private boolean makeBreak;
     
       
-    public Curve(int x, int y, Color color)
+    public Curve(int x, int y, Color color, KeyCode l, KeyCode r)
     {
-        Circle point = new Circle(x, y, 2);
+        rightKeyCode = r;
+        leftKeyCode = l;
+        
+        Circle point = new Circle(0, 0, 2);
+        point.setTranslateX(x);
+        point.setTranslateY(y);
         point.setCache(true);
         point.setFill(Color.YELLOW);
         
         node = point;
         
         this.color = color;
-        angle = 0;
+        angle = rnd.nextInt(360);
         length = 0;
         turnLeft = false;
         turnRight = false;
@@ -86,13 +94,21 @@ public class Curve extends Sprite
             double distance = Math.sqrt( dx * dx + dy * dy );
             double minDist  = otherPoint.getRadius() + thisPoint.getRadius();
             
-            System.out.println(distance + " < " + minDist);
-            
             return (distance < minDist);
         }
         else return false;
     }
-    
+
+    public KeyCode getRightKeyCode()
+    {
+        return rightKeyCode;
+    }
+
+    public KeyCode getLeftKeyCode()
+    {
+        return leftKeyCode;
+    }
+  
     public Circle getAsCircle()
     {
         return (Circle)node;
