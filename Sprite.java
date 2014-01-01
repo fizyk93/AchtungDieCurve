@@ -21,7 +21,7 @@ public abstract class Sprite
     
     public abstract void update();
     
-    public boolean collide(Sprite other)
+    public boolean collide(Node node)
     {
         return false;
     }

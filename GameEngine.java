@@ -6,6 +6,7 @@
 
 package achtungdiecurve;
 
+import java.util.ListIterator;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -13,6 +14,7 @@ import javafx.animation.TimelineBuilder;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -87,13 +89,22 @@ public abstract class GameEngine
     
     protected void checkCollisions()
     {
-        for(Sprite spriteA : SpriteManager.getAllSprites())
-            for(Sprite spriteB : SpriteManager.getAllSprites())
-                handleCollision(spriteA, spriteB);
+        for(Sprite sprite : SpriteManager.getAllSprites())
+        {
+            int size = SpriteManager.getCollisionNodes().size();
+            if(size > 8)
+            {
+                for(Node node : SpriteManager.getCollisionNodes().subList(0, size-8))
+                {
+                    handleCollision(sprite, node);
+                }
+            }
+        }
+            
                     
     }
     
-    protected boolean handleCollision(Sprite spriteA, Sprite spriteB)
+    protected boolean handleCollision(Sprite sprite, Node node)
     {
         return false;
     }

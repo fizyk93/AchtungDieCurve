@@ -9,6 +9,7 @@ package achtungdiecurve;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javafx.scene.Node;
 
 /**
  *
@@ -19,7 +20,22 @@ public class SpriteManager
 //    private final static List Sprites;
     
     private static final List<Sprite> sprites = new ArrayList<Sprite>();
+    private static final List<Node> collisionNodes = new ArrayList<Node>();
 
+    public SpriteManager()
+    {
+    }
+    
+    public static List<Node> getCollisionNodes()
+    {
+        return collisionNodes;
+    }
+    
+    public static void addCollisionNodes(Node... nodes)
+    {
+        collisionNodes.addAll(Arrays.asList(nodes));
+    }
+    
     public static List<Sprite> getAllSprites()
     {
         return sprites;

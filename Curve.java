@@ -6,6 +6,8 @@
 
 package achtungdiecurve;
 
+import java.util.Random;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
@@ -15,27 +17,44 @@ import javafx.scene.shape.Circle;
  */
 public class Curve extends Sprite
 {
+    private static Random  rnd = new Random();
     private double angle;
-    public boolean turnRight, turnLeft;
     
-    public Curve(int x, int y)
+    private int length;
+
+    private boolean turnLeft, turnRight;
+    
+    private Color color;
+   
+    private int drawCounter, breakCounter;
+    private boolean makeBreak;
+    
+      
+    public Curve(int x, int y, Color color)
     {
         Circle point = new Circle(x, y, 2);
         point.setCache(true);
-        point.setFill(Color.RED);
+        point.setFill(Color.YELLOW);
         
         node = point;
         
+        this.color = color;
         angle = 0;
+        length = 0;
         turnLeft = false;
         turnRight = false;
+        makeBreak = false;
+        setBreakCounter(0);
+        setDrawCounter();
+        
     }
     
-    public static Circle copyNode(Circle c)
+    public static Circle copyNode(Curve c)
     {
-        Circle tmp = new Circle(c.getCenterX(), c.getCenterY(), c.getRadius());
-        tmp.setTranslateX(c.getTranslateX());
-        tmp.setTranslateY(c.getTranslateY());
+        Circle toCopy = c.getAsCircle();
+        Circle tmp = new Circle(toCopy.getCenterX(), toCopy.getCenterY(), toCopy.getRadius(), c.color);
+        tmp.setTranslateX(toCopy.getTranslateX());
+        tmp.setTranslateY(toCopy.getTranslateY());
         
         return tmp;
     }
@@ -45,24 +64,30 @@ public class Curve extends Sprite
     {
         if(turnLeft) angle -= 2;
         else if(turnRight) angle += 2;
+        
+        length++;
+        
         node.setTranslateX(node.getTranslateX()+Math.cos(angle/180*Math.PI));
         node.setTranslateY(node.getTranslateY()+Math.sin(angle/180*Math.PI));
     }
    
     
     @Override
-    public boolean collide(Sprite other)
+    public boolean collide(Node node)
     {
-        if(other instanceof Curve)
-        {
-            Circle otherPoint = ((Curve)other).getAsCircle();
+        if(node instanceof Circle)
+        {   
+            Circle otherPoint = (Circle)node;
             Circle thisPoint = getAsCircle();
+            
             
             double dx = otherPoint.getTranslateX() - thisPoint.getTranslateX();
             double dy = otherPoint.getTranslateY() - thisPoint.getTranslateY();
             double distance = Math.sqrt( dx * dx + dy * dy );
             double minDist  = otherPoint.getRadius() + thisPoint.getRadius();
- 
+            
+            System.out.println(distance + " < " + minDist);
+            
             return (distance < minDist);
         }
         else return false;
@@ -84,5 +109,74 @@ public class Curve extends Sprite
         else if(newAngle < 0) angle += 360;
         else angle = newAngle;
     }
+    
+    public boolean getTurnRight()
+    {
+        return turnRight;
+    }
 
+    public void setTurnRight(boolean turnLeft)
+    {
+        this.turnRight = turnLeft;
+    }
+
+    public boolean getTurnLeft()
+    {
+        return turnLeft;
+    }
+
+    public void setTurnLeft(boolean turnLeft)
+    {
+        this.turnLeft = turnLeft;
+    }
+    
+    public int getLength()
+    {
+        return length;
+    }
+
+    public void setLength(int length)
+    {
+        this.length = length;
+    }
+    
+    public int getDrawCounter()
+    {
+        return drawCounter;
+    }
+
+    public final void setDrawCounter()
+    {      
+        this.drawCounter = (int)rnd.nextInt(100);
+    }
+
+    public int getBreakCounter()
+    {
+        return breakCounter;
+    }
+
+    public final void setBreakCounter(int n)
+    {
+        this.breakCounter = n;
+    }
+    
+    public void decrementBreakCounter()
+    {
+        breakCounter--;
+    }
+    
+    public void incrementBreakCounter()
+    {
+        breakCounter++;
+    }
+    
+    public boolean isMakeBreak()
+    {
+        return makeBreak;
+    }
+
+    public void setMakeBreak(boolean makeBreak)
+    {
+        this.makeBreak = makeBreak;
+    }
 }
